@@ -2,9 +2,9 @@
 -- Company: -
 -- Engineer: Giorgio Ubbriaco
 -- 
--- Create Date: 02.05.2025 17:32:40
+-- Create Date: 02.05.2025 18:48:21
 -- Design Name: 
--- Module Name: FullAdder_tb - Behavioral
+-- Module Name: HalfAdder_tb - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -33,62 +33,54 @@ use IEEE.STD_LOGIC_ARITH.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity FullAdder_tb is
+entity HalfAdder_tb is
 --  Port ( );
-end FullAdder_tb;
+end HalfAdder_tb;
 
-architecture Behavioral of FullAdder_tb is
+architecture Behavioral of HalfAdder_tb is
 
-	component FullAdder is
+	component HalfAdder is
 		port(
-			A  : in std_logic;
-			B  : in std_logic; 
-			Ci : in std_logic;
-			S  : out std_logic; 
-			Co : out std_logic
+			A, B: in std_logic;
+			S, Co: out std_logic
 		);
 	end component;
 	
 	signal A  : std_logic := '0';
 	signal B  : std_logic := '0';
-	signal Ci : std_logic := '0';
 	signal S  : std_logic; 
 	signal Co : std_logic;
 	
 	signal eA    : integer := 0;
 	signal eB    : integer := 0;
-	signal eCi   : integer := 0;
 	signal eS    : integer := 0;
 	signal eCo   : integer := 0;
 	signal errS  : integer := 0;
 	signal errCo : integer := 0;
 
 	begin
-		
-		UUT: FullAdder 
+	
+		UUT: HalfAdder 
 		port map(
 			A  => A,
 			B  => B,
-			Ci => Ci,
 			S  => S,
 			Co => Co
 		);
 		
-			process
+		process
 				begin
 					
-					-- Generate all 8 combinations for A, B, Ci
-					-- A	 <= (i / 4) mod 2	-> (MSB)
-					-- B	 <= (i / 2) mod 2	-> (middle bit)
-					-- Ci <= i mod 2			-> (LSB)
-					-- example: combination 101 -> A=1, B=0, Ci=1
-					for i in 0 to 7 loop
-						eA  <= (i/4) mod 2;
-						eB  <= (i/2) mod 2;
-						eCi <= i  mod 2;
+					-- Generate all 4 combinations for A, B
+					-- A	 <= (i / 2) mod 2	-> (MSB)
+					-- B	 <= i mod 2			-> (LSB)
+					-- example: combination 10 -> A=1, B=0
+					for i in 0 to 3 loop
+						eA  <= (i/2) mod 2;
+						eB  <= i mod 2;
 						
-						eS  <= (eA + eB + eCi) mod 2;
-						eCo <= (eA + eB + eCi) / 2;
+						eS  <= (eA + eB) mod 2;
+						eCo <= (eA + eB) / 2;
 						
 						if eA = 0 then
 							A  <= '0';
@@ -100,12 +92,6 @@ architecture Behavioral of FullAdder_tb is
 							B  <= '0';
 						else
 							B  <= '1';
-						end if;
-						
-						if eCi = 0 then
-							Ci  <= '0';
-						else
-							Ci  <= '1';
 						end if;
 						 
 						wait for 10 ns;
