@@ -59,7 +59,7 @@ architecture Behavioral of RippleCarryAdderSigned is
 		
 		C(0) <= Ci;
 		
-		for_gen: for i in 0 to n-1 generate
+		for_gen: for i in 0 to n generate
 			if_gen1 : if (i<n) generate
 				FA : FullAdder port map(A(i), B(i), C(i), S(i), C(i+1));
 			end generate if_gen1;
